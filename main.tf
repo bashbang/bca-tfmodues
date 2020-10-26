@@ -60,7 +60,20 @@ resource "azurerm_container_registry" "acr" {
 
 }
 
+provider "azuread" {
+  version = "~>0.7"
+}
 
+data "azuread_service_principal" "aks_principal" {
+  application_id = var.aks_service_principal_client_id
+}
+
+resource "azurerm_role_assignment" "acrpull_role" {
+  scope                            = azurerm_container_registry.acr.id
+  role_definition_name             = "AcrPull"
+  principal_id                     = data.azuread_service_principal.aks_principal.id
+  skip_service_principal_aad_check = true
+}
 
 resource "azurerm_cosmosdb_account" "db" {
   name                = var.cosmosdb_name
