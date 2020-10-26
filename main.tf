@@ -56,7 +56,7 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled       = true
 
   # TODO: add tag support
-  tags = local.common_tags
+  #tags = local.common_tags
 
 }
 
