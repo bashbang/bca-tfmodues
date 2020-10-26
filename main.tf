@@ -9,7 +9,7 @@ resource "random_string" "prefix" {
 
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
-  location = var.region
+  location = var.location
   # TODO: Add Tag support
   #tags     = local.common_tags
 }
