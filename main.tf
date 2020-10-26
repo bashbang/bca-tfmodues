@@ -60,10 +60,6 @@ resource "azurerm_container_registry" "acr" {
 
 }
 
-provider "azuread" {
-  version = "~>0.7"
-}
-
 data "azuread_service_principal" "aks_principal" {
   application_id = var.client_id
 }
