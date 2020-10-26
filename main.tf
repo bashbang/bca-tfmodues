@@ -65,7 +65,7 @@ provider "azuread" {
 }
 
 data "azuread_service_principal" "aks_principal" {
-  application_id = var.aks_service_principal_client_id
+  application_id = var.client_id
 }
 
 resource "azurerm_role_assignment" "acrpull_role" {
