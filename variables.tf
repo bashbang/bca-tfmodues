@@ -39,11 +39,11 @@ variable acr_name {
 }
 
 
-# # Cosomos DB variables
-# variable cosmosdb_name {
-#   type        = string
-#   description = "The name of the CosmosDB"
-# }
+# Cosomos DB variables
+variable cosmosdb_name {
+  type        = string
+  description = "The name of the CosmosDB"
+}
 
 # TODO: will need to add more cosmos variables to support a failover environment and allow for multi database.
 # TODO: currently only useing a single database in a single region.
