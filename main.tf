@@ -10,6 +10,7 @@ resource "random_string" "prefix" {
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
+  tenant   = var.tenant
   # TODO: Add Tag support
   #tags     = local.common_tags
 }
@@ -80,14 +81,17 @@ resource "azurerm_cosmosdb_account" "db" {
 
   enable_automatic_failover = false
 
+  # May not need this setting in combination with capability "EnableMongo"
   capabilities {
     name = "EnableAggregationPipeline"
   }
 
+  # May not need this setting in combination with capability "EnableMongo"
   capabilities {
     name = "mongoEnableDocLevelTTL"
   }
 
+  # May not need this setting in combination with capability "EnableMongo"
   capabilities {
     name = "MongoDBv3.4"
   }
@@ -106,4 +110,55 @@ resource "azurerm_cosmosdb_account" "db" {
     location          = azurerm_resource_group.rg.location
     failover_priority = 0
   }
+}
+
+# Get the azure config -- TODO: should we use vars from this rather than storing as secrets?
+data "azurerm_client_config" "current" {}
+
+
+resource "azurerm_key_vault" "akv" {
+  name                        = "BCAKeyVault"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id = azurerm_resource_group.rg.tenant
+  # TODO: I like this method of obtaining the secrets....is it better than using the TF cloud secrets?
+  #  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_enabled         = true
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = azurerm_resource_group.rg.tenant
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "get",
+      "ManageContacts",
+    ]
+
+    secret_permissions = [
+      "get",
+    ]
+
+    storage_permissions = [
+      "get",
+    ]
+  }
+
+  network_acls {
+    default_action = "Deny"
+    bypass         = "AzureServices"
+  }
+
+  contact {
+    email = "example@example.com"
+    name  = "example"
+    phone = "0123456789"
+  }
+
+  #tags     = local.common_tags
+
 }
