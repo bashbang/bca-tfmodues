@@ -51,3 +51,9 @@ variable cosmosdb_name {
 
 # TODO: will need to add more cosmos variables to support a failover environment and allow for multi database.
 # TODO: currently only useing a single database in a single region.
+
+# AKV
+variable avk_name {
+  type = string
+  description = "The globally unique name for the AKV - consider using random string within the name"
+}
