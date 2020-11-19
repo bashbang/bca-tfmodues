@@ -89,7 +89,11 @@ resource "azurerm_cosmosdb_account" "db" {
   }
 
   capabilities {
-    name = "MongoDBv3.6"
+    name = "MongoDBv3.4"
+  }
+
+  capabilities {
+    name = "EnableMongo"
   }
 
   consistency_policy {
