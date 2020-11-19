@@ -128,34 +128,33 @@ resource "azurerm_key_vault" "akv" {
 
   sku_name = "standard"
 
-  access_policy {
-    tenant_id = var.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+  # access_policy {
+  #   tenant_id = var.tenant_id
+  #   object_id = data.azurerm_client_config.current.object_id
 
-    key_permissions = [
-      "get",
-      "ManageContacts",
-    ]
+  #   key_permissions = [
+  #     "get",
+  #   ]
 
-    secret_permissions = [
-      "get",
-    ]
+  #   secret_permissions = [
+  #     "get",
+  #   ]
 
-    storage_permissions = [
-      "get",
-    ]
-  }
+  #   storage_permissions = [
+  #     "get",
+  #   ]
+  # }
 
-  network_acls {
-    default_action = "Deny"
-    bypass         = "AzureServices"
-  }
+  # network_acls {
+  #   default_action = "Deny"
+  #   bypass         = "AzureServices"
+  # }
 
-  contact {
-    email = "example@example.com"
-    name  = "example"
-    phone = "0123456789"
-  }
+  # contact {
+  #   email = "example@example.com"
+  #   name  = "example"
+  #   phone = "0123456789"
+  # }
 
   #tags     = local.common_tags
 
