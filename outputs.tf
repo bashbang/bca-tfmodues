@@ -23,11 +23,6 @@ output "akvname" {
     description = "The Azure Key Vault Name"
 }
 
-output "cosmosdbname" {
-    value = azurerm_cosmosdb_account.db.name
-    description = "The cosmosdb host used in a connection string"
-}
-
 output "cosmosdbprimary_key" {
     value = azurerm_cosmosdb_account.db.primary_key
     description = "The cosmosdb host used in a connection string"
