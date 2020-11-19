@@ -10,7 +10,6 @@ resource "random_string" "prefix" {
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
-  tenant   = var.tenant
   # TODO: Add Tag support
   #tags     = local.common_tags
 }
@@ -118,20 +117,20 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "akv" {
   name                        = "BCAKeyVault"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
-  tenant_id = azurerm_resource_group.rg.tenant
+  tenant_id                   = var.tenant
   # TODO: I like this method of obtaining the secrets....is it better than using the TF cloud secrets?
   #  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_enabled         = true
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
+  soft_delete_enabled        = true
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false
 
   sku_name = "standard"
 
   access_policy {
-    tenant_id = azurerm_resource_group.rg.tenant
+    tenant_id = var.tenant
     object_id = data.azurerm_client_config.current.object_id
 
     key_permissions = [
