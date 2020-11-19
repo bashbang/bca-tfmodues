@@ -22,3 +22,25 @@ output "akvname" {
     value = azurerm_key_vault.akv.name
     description = "The Azure Key Vault Name"
 }
+
+output "cosmosdbname" {
+    value = azurerm_cosmosdb_account.db.name
+    description = "The cosmosdb host used in a connection string"
+}
+
+output "cosmosdbprimary_key" {
+    value = azurerm_cosmosdb_account.db.primary_key
+    description = "The cosmosdb host used in a connection string"
+}
+
+output "cosmosdbprimary_master_key" {
+    value = azurerm_cosmosdb_account.db.primary_master_key
+    description = "The cosmosdb host used in a connection string"
+}
+
+output "cosmosdbread_endpoints" {
+    value = azurerm_cosmosdb_account.db.read_endpoints
+    description = "The cosmosdb host used in a connection string"
+}
+
+
