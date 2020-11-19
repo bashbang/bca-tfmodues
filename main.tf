@@ -44,7 +44,6 @@ resource "azurerm_kubernetes_cluster" "default" {
 
   # TODO: add tag support
   #tags = local.common_tags
-
 }
 
 
