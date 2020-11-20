@@ -113,7 +113,7 @@ resource "azurerm_cosmosdb_account" "db" {
 }
 
 resource "azurerm_key_vault" "akv" {
-  name                        = "var.avk_name${random_string.prefix.id}"
+  name                        = "${var.avk_name}-${random_string.prefix.id}"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
