@@ -154,13 +154,11 @@ resource "azurerm_key_vault_access_policy" "default_policy" {
     create_before_destroy = true
   }
 
-  key_permissions         = var.kv-key-permissions-full
-  secret_permissions      = var.kv-secret-permissions-full
-  certificate_permissions = var.kv-certificate-permissions-full
-  storage_permissions     = var.kv-storage-permissions-full
+  key_permissions         = [ "backup", "create", "decrypt", "delete", "encrypt", "get", "import", "list", "purge", "recover", "restore", "sign", "unwrapKey","update", "verify", "wrapKey" ]
+  secret_permissions      = [ "backup", "delete", "get", "list", "purge", "recover", "restore", "set" ]
+  certificate_permissions = [ "create", "delete", "deleteissuers", "get", "getissuers", "import", "list", "listissuers", "managecontacts", "manageissuers", "purge", "recover", "setissuers", "update", "backup", "restore" ]
+  storage_permissions     = [ "backup", "delete", "deletesas", "get", "getsas", "list", "listsas", "purge", "recover", "regeneratekey", "restore", "set", "setsas", "update" ]
 }
-
-
 
 
 resource "azurerm_key_vault_secret" "akv-dbuid-secret" {
