@@ -128,19 +128,19 @@ resource "azurerm_key_vault" "akv" {
 
   sku_name = "standard"
 
-  secrets = {
-    DBUID = {
-      value = azurerm_cosmosdb_account.db.name
-    }
-    DBPWD = {
-      value = azurerm_cosmosdb_account.db.primary_key
-    }
-    DBHOST = {
-      value = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
-    }
-
-  }
-
   #tags     = local.common_tags
 
+}
+
+
+resource "azurerm_key_vault_secret" "akv-secret" {
+  for_each = var.secrets
+  key_vault_id = azurerm_key_vault.akv.id
+  name = each.key
+  value = lookup(each.value, "value")
+  # tags = var.tags
+  depends_on [
+    azurerm_key_vault.akv,
+    azurerm_cosmosdb_account.db,
+  ]
 }
