@@ -21,6 +21,11 @@ variable "dns_prefix" {
   description = "The DNS prefix used within the AKS definition"
 }
 
+variable "client_id" {
+  type        = string
+  description = "The id of the principle client"
+}
+
 variable "client_secret" {
   type        = string
   description = "The secret/password for this client_id account"

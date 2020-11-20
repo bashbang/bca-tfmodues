@@ -30,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   service_principal {
-    client_id     = data.azurerm_client_config.current.client_id
+    client_id     = var.client_id
     client_secret = var.client_secret
   }
 
@@ -62,7 +62,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 data "azuread_service_principal" "aks_principal" {
-  application_id = data.azurerm_client_config.current.client_id
+  application_id = var.client_id
 }
 
 resource "azurerm_role_assignment" "acrpull_role" {
