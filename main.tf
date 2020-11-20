@@ -1,9 +1,4 @@
-# Consider using a client config to obtain Azure creds:
-#eg:
-# data "azurerm_client_config" "current" {}
-# then reference it like:
-#   tenant_id = data.azurerm_client_config.current.tenant_id
-
+data "azurerm_client_config" "current" {}
 
 resource "random_string" "prefix" {
   length  = 8
@@ -126,8 +121,9 @@ resource "azurerm_key_vault" "akv" {
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
-  tenant_id                   = var.tenant_id
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
   # TODO: I like this method of obtaining the secrets....is it better than using the TF cloud secrets?
+  # TODO: If this works, refactor the code to use this method.
   #  tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_enabled        = true
   soft_delete_retention_days = 7
@@ -148,7 +144,8 @@ resource "azurerm_key_vault" "akv" {
 # This policy must be kept for a proper run of the "destroy" process
 resource "azurerm_key_vault_access_policy" "default_policy" {
   key_vault_id = azurerm_key_vault.akv.id
-  tenant_id    = var.tenant_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
 
   lifecycle {
     create_before_destroy = true
