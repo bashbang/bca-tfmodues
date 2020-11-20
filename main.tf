@@ -1,3 +1,10 @@
+# Consider using a client config to obtain Azure creds:
+#eg:
+# data "azurerm_client_config" "current" {}
+# then reference it like:
+#   tenant_id = data.azurerm_client_config.current.tenant_id
+
+
 resource "random_string" "prefix" {
   length  = 8
   special = false
@@ -128,26 +135,49 @@ resource "azurerm_key_vault" "akv" {
 
   sku_name = "standard"
 
-  #tags     = local.common_tags
+  network_acls {
+    default_action = "Allow"
+    bypass         = "AzureServices"
+  }
 
+  #tags     = local.common_tags
 }
 
 
+# Create a Default Azure Key Vault access policy with Admin permissions
+# This policy must be kept for a proper run of the "destroy" process
+resource "azurerm_key_vault_access_policy" "default_policy" {
+  key_vault_id = azurerm_key_vault.akv.id
+  tenant_id    = var.tenant_id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  key_permissions         = var.kv-key-permissions-full
+  secret_permissions      = var.kv-secret-permissions-full
+  certificate_permissions = var.kv-certificate-permissions-full
+  storage_permissions     = var.kv-storage-permissions-full
+}
+
+
+
+
 resource "azurerm_key_vault_secret" "akv-dbuid-secret" {
-  name = "DBUID"
-  value = azurerm_cosmosdb_account.db.name
+  name         = "DBUID"
+  value        = azurerm_cosmosdb_account.db.name
   key_vault_id = azurerm_key_vault.akv.id
 }
 
 resource "azurerm_key_vault_secret" "akv-dbpwd-secret" {
-  name = "DBPWD"
-  value = azurerm_cosmosdb_account.db.primary_key
+  name         = "DBPWD"
+  value        = azurerm_cosmosdb_account.db.primary_key
   key_vault_id = azurerm_key_vault.akv.id
 }
 
 resource "azurerm_key_vault_secret" "akv-dbhost-secret" {
-  name = "DBHOST"
-  value = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
+  name         = "DBHOST"
+  value        = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
   key_vault_id = azurerm_key_vault.akv.id
 
   depends_on = [
