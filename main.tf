@@ -30,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   service_principal {
-    client_id     = var.client_id
+    client_id     = data.azurerm_client_config.current.client_id
     client_secret = var.client_secret
   }
 
@@ -62,7 +62,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 data "azuread_service_principal" "aks_principal" {
-  application_id = var.client_id
+  application_id = data.azurerm_client_config.current.client_id
 }
 
 resource "azurerm_role_assignment" "acrpull_role" {
@@ -118,12 +118,9 @@ resource "azurerm_key_vault" "akv" {
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
-  # TODO: I like this method of obtaining the secrets....is it better than using the TF cloud secrets?
-  # TODO: If this works, refactor the code to use this method.
-  #  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_enabled        = true
-  soft_delete_retention_days = 7
-  purge_protection_enabled   = false
+  soft_delete_enabled         = true
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
 
   sku_name = "standard"
 
@@ -147,10 +144,10 @@ resource "azurerm_key_vault_access_policy" "default_policy" {
     create_before_destroy = true
   }
 
-  key_permissions         = [ "backup", "create", "decrypt", "delete", "encrypt", "get", "import", "list", "purge", "recover", "restore", "sign", "unwrapKey","update", "verify", "wrapKey" ]
-  secret_permissions      = [ "backup", "delete", "get", "list", "purge", "recover", "restore", "set" ]
-  certificate_permissions = [ "create", "delete", "deleteissuers", "get", "getissuers", "import", "list", "listissuers", "managecontacts", "manageissuers", "purge", "recover", "setissuers", "update", "backup", "restore" ]
-  storage_permissions     = [ "backup", "delete", "deletesas", "get", "getsas", "list", "listsas", "purge", "recover", "regeneratekey", "restore", "set", "setsas", "update" ]
+  key_permissions         = ["backup", "create", "decrypt", "delete", "encrypt", "get", "import", "list", "purge", "recover", "restore", "sign", "unwrapKey", "update", "verify", "wrapKey"]
+  secret_permissions      = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
+  certificate_permissions = ["create", "delete", "deleteissuers", "get", "getissuers", "import", "list", "listissuers", "managecontacts", "manageissuers", "purge", "recover", "setissuers", "update", "backup", "restore"]
+  storage_permissions     = ["backup", "delete", "deletesas", "get", "getsas", "list", "listsas", "purge", "recover", "regeneratekey", "restore", "set", "setsas", "update"]
 }
 
 
