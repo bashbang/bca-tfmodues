@@ -57,26 +57,3 @@ variable avk_name {
   type        = string
   description = "The globally unique name for the AKV - consider using random string within the name"
 }
-
-
-
-
-# Setting the defaults here...but probably should be placed in a .tfvars file instead.
-
-variable "akv-secrets" {
-  type = map(object({
-    value = string
-  }))
-  description = "Defined Azure Key Vault Secrets"
-  default = {
-    DBUID = {
-      value = azurerm_cosmosdb_account.db.name
-    }
-    DBPWD = {
-      value = azurerm_cosmosdb_account.db.primary_key
-    }
-    DBHOST = {
-      value = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
-    }
-  }
-}
