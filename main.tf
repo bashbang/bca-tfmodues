@@ -145,7 +145,7 @@ resource "azurerm_key_vault_secret" "akv-dbpwd-secret" {
   key_vault_id = azurerm_key_vault.akv.id
 }
 
-resource "azurerm_key_vault_secret" "akv-dbuid-secret" {
+resource "azurerm_key_vault_secret" "akv-dbhost-secret" {
   name = "DBHOST"
   value = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
   key_vault_id = azurerm_key_vault.akv.id
