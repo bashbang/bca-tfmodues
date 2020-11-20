@@ -112,10 +112,6 @@ resource "azurerm_cosmosdb_account" "db" {
   }
 }
 
-# Get the azure config -- TODO: should we use vars from this rather than storing as secrets?
-data "azurerm_client_config" "current" {}
-
-
 resource "azurerm_key_vault" "akv" {
   name                        = var.avk_name
   location                    = azurerm_resource_group.rg.location
