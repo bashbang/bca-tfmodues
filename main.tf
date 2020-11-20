@@ -128,33 +128,18 @@ resource "azurerm_key_vault" "akv" {
 
   sku_name = "standard"
 
-  # access_policy {
-  #   tenant_id = var.tenant_id
-  #   object_id = data.azurerm_client_config.current.object_id
+  secrets = {
+    DBUID = {
+      value = azurerm_cosmosdb_account.db.name
+    }
+    DBPWD = {
+      value = azurerm_cosmosdb_account.db.primary_key
+    }
+    DBHOST = {
+      value = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
+    }
 
-  #   key_permissions = [
-  #     "get",
-  #   ]
-
-  #   secret_permissions = [
-  #     "get",
-  #   ]
-
-  #   storage_permissions = [
-  #     "get",
-  #   ]
-  # }
-
-  # network_acls {
-  #   default_action = "Deny"
-  #   bypass         = "AzureServices"
-  # }
-
-  # contact {
-  #   email = "example@example.com"
-  #   name  = "example"
-  #   phone = "0123456789"
-  # }
+  }
 
   #tags     = local.common_tags
 

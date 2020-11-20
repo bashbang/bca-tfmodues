@@ -32,7 +32,7 @@ variable "client_secret" {
 }
 
 variable "tenant_id" {
-  type = string
+  type        = string
   description = "The secret for the Azure Tenant ID"
 }
 
@@ -54,6 +54,6 @@ variable cosmosdb_name {
 
 # AKV
 variable avk_name {
-  type = string
+  type        = string
   description = "The globally unique name for the AKV - consider using random string within the name"
 }
