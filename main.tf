@@ -48,6 +48,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
   #tags = local.common_tags
 }
 
+# TODO:
+# Request Github account authorization
+# inject ACR secrets into Github actions - or find a way to have Github pull AKV secrets to authorize image push from github actions pipeline to ACR
+# Current method is to save ACR secrets as a Github secrets and update yaml configs. 
+
 
 resource "azurerm_container_registry" "acr" {
   name                = var.acr_name
@@ -172,4 +177,32 @@ resource "azurerm_key_vault_secret" "akv-dbhost-secret" {
     azurerm_key_vault.akv,
     azurerm_cosmosdb_account.db,
   ]
+}
+
+
+
+resource "azurerm_postgresql_server" "bca-postgres" {
+  name                = "postgresql-server-1"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+
+  sku_name = "B_Gen5_2"
+
+  storage_mb                   = 1024
+  backup_retention_days        = 0
+  geo_redundant_backup_enabled = false
+  auto_grow_enabled            = true
+
+  administrator_login          = "psqladminun"
+  administrator_login_password = "Password!"
+  version                      = "9.5"
+  ssl_enforcement_enabled      = true
+}
+
+resource "azurerm_postgresql_database" "strapi" {
+  name                = "strapi"
+  resource_group_name         = azurerm_resource_group.rg.name
+  server_name         = azurerm_postgresql_server.bca-postgres.name
+  charset             = "UTF8"
+  collation           = "English_United States.1252"
 }
