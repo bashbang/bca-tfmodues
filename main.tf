@@ -182,7 +182,7 @@ resource "azurerm_key_vault_secret" "akv-dbhost-secret" {
 
 
 resource "azurerm_postgresql_server" "bca-postgres" {
-  name                = "postgresql-server-1"
+  name                        = "${var.avk_name}-${random_string.prefix.id}-psql"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
 
