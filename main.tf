@@ -188,8 +188,8 @@ resource "azurerm_postgresql_server" "bca-postgres" {
 
   sku_name = "B_Gen5_2"
 
-  storage_mb                   = 1024
-  backup_retention_days        = 0
+  storage_mb                   = 5120
+  backup_retention_days        = 7
   geo_redundant_backup_enabled = false
   auto_grow_enabled            = true
 
