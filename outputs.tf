@@ -20,13 +20,13 @@ output "psqlname" {
 
 # TODO: Pull this out after testing - these credentials are directly stored in AKV and should be pulled from AKV
 output "psqladmin" {
-  value       = random_string.psqladmin
+  value       = random_string.psqluid
   description = "This is the admin user id for the PSQL database"
   #sensitive = true
 }
 
 output "psqlpassword" {
-  value       = "var.random_password.psqpassword"
+  value       = random_password.psqlpwd
   description = "This is the temp admin password for the init of the PSQL database"
   #sensitive = true
 }
