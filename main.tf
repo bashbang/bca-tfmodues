@@ -9,9 +9,9 @@ resource "random_string" "psqladmin" {
 }
 
 resource "random_password" "psqpassword" {
-  length           = 16
-  special          = true
-  override_special = "_%@"
+  length  = 16
+  special = false
+  #override_special = "_%@"
 }
 
 
@@ -146,10 +146,11 @@ resource "azurerm_postgresql_server" "bca-postgres" {
   geo_redundant_backup_enabled = false
   auto_grow_enabled            = true
 
-  administrator_login          = random_string.psqladmin.id
-  administrator_login_password = random_password.psqpassword.id
-  version                      = "9.5"
-  ssl_enforcement_enabled      = true
+  administrator_login          = random_string.psqladmin.result
+  administrator_login_password = random_password.psqpassword.result
+
+  version                 = "9.5"
+  ssl_enforcement_enabled = true
 
   depends_on = [
     azurerm_key_vault.akv,
