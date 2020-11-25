@@ -37,15 +37,11 @@ variable acr_name {
   description = "The name used for the Azure Container Registry (ACR)"
 }
 
-
-# Cosomos DB variables
-variable cosmosdb_name {
+# PostgreSQL DB variables
+variable psql_name {
   type        = string
-  description = "The name of the CosmosDB"
+  description = "The name of the Postgresql datbase"
 }
-
-# TODO: will need to add more cosmos variables to support a failover environment and allow for multi database.
-# TODO: currently only useing a single database in a single region.
 
 # AKV
 variable avk_name {

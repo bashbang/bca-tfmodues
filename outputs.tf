@@ -13,24 +13,27 @@ output "acrname" {
   description = "The name of the Azure Container Registry"
 }
 
-output "cosmosdbname" {
-  value       = azurerm_cosmosdb_account.db.name
-  description = "The name of the Azure Cosmos Database"
+output "psqlname" {
+  value       = azurerm_postgresql_server.bca-postgres.name
+  description = "The name of the Azure PSQL Database Service"
+}
+
+# TODO: Pull this out after testing - these credentials are directly stored in AKV and should be pulled from AKV
+output "psqladmin" {
+  value       = random_string.psqladmin
+  description = "This is the admin user id for the PSQL database"
+  #sensitive = true
+}
+
+output "psqlpassword" {
+  value       = "var.random_password.psqpassword"
+  description = "This is the temp admin password for the init of the PSQL database"
+  #sensitive = true
 }
 
 output "akvname" {
   value       = azurerm_key_vault.akv.name
   description = "The Azure Key Vault Name"
-}
-
-output "cosmosdbprimary_key" {
-  value       = azurerm_cosmosdb_account.db.primary_key
-  description = "The cosmosdb host used in a connection string"
-}
-
-output "cosmosdbread_endpoints" {
-  value       = azurerm_cosmosdb_account.db.read_endpoints
-  description = "The cosmosdb host used in a connection string"
 }
 
 

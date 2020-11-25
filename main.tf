@@ -1,13 +1,19 @@
 data "azurerm_client_config" "current" {}
 
-resource "random_string" "prefix" {
+resource "random_string" "psqladmin" {
   length  = 8
   special = false
   lower   = true
   upper   = false
   number  = true
-
 }
+
+resource "random_password" "psqpassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
 
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
@@ -25,7 +31,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   default_node_pool {
     name            = "default"
     node_count      = 2
-    vm_size         = "Standard_D2_v2"
+    vm_size         = "Standard_D2s_v3"
     os_disk_size_gb = 30
   }
 
@@ -77,48 +83,8 @@ resource "azurerm_role_assignment" "acrpull_role" {
   skip_service_principal_aad_check = true
 }
 
-resource "azurerm_cosmosdb_account" "db" {
-  name                = var.cosmosdb_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  offer_type          = "Standard"
-  kind                = "MongoDB"
-
-  enable_automatic_failover = false
-
-  # May not need this setting in combination with capability "EnableMongo"
-  capabilities {
-    name = "EnableAggregationPipeline"
-  }
-
-  # May not need this setting in combination with capability "EnableMongo"
-  capabilities {
-    name = "mongoEnableDocLevelTTL"
-  }
-
-  # May not need this setting in combination with capability "EnableMongo"
-  capabilities {
-    name = "MongoDBv3.4"
-  }
-
-  capabilities {
-    name = "EnableMongo"
-  }
-
-  consistency_policy {
-    consistency_level       = "BoundedStaleness"
-    max_interval_in_seconds = 10
-    max_staleness_prefix    = 200
-  }
-
-  geo_location {
-    location          = azurerm_resource_group.rg.location
-    failover_priority = 0
-  }
-}
-
 resource "azurerm_key_vault" "akv" {
-  name                        = "${var.avk_name}-${random_string.prefix.id}"
+  name                        = var.avk_name
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
@@ -155,36 +121,23 @@ resource "azurerm_key_vault_access_policy" "default_policy" {
   storage_permissions     = ["backup", "delete", "deletesas", "get", "getsas", "list", "listsas", "purge", "recover", "regeneratekey", "restore", "set", "setsas", "update"]
 }
 
-
-resource "azurerm_key_vault_secret" "akv-dbuid-secret" {
-  name         = "DBUID"
-  value        = azurerm_cosmosdb_account.db.name
+# inject the uid/pwd directly into keyvault
+resource "azurerm_key_vault_secret" "dbuid-secret" {
+  name         = "PSQLUID"
   key_vault_id = azurerm_key_vault.akv.id
+  value        = azurerm_postgresql_server.bca-postgres.administrator_login
 }
 
-resource "azurerm_key_vault_secret" "akv-dbpwd-secret" {
-  name         = "DBPWD"
-  value        = azurerm_cosmosdb_account.db.primary_key
+resource "azurerm_key_vault_secret" "dbuid-secret" {
+  name         = "PSQLPWD"
   key_vault_id = azurerm_key_vault.akv.id
+  value        = azurerm_postgresql_server.bca-postgres.administrator_login_password
 }
-
-resource "azurerm_key_vault_secret" "akv-dbhost-secret" {
-  name         = "DBHOST"
-  value        = "${azurerm_cosmosdb_account.db.name}.mongo.cosmos.azure.com"
-  key_vault_id = azurerm_key_vault.akv.id
-
-  depends_on = [
-    azurerm_key_vault.akv,
-    azurerm_cosmosdb_account.db,
-  ]
-}
-
-
 
 resource "azurerm_postgresql_server" "bca-postgres" {
-  name                        = "${var.avk_name}-${random_string.prefix.id}-psql"
-  location                    = azurerm_resource_group.rg.location
-  resource_group_name         = azurerm_resource_group.rg.name
+  name                = var.psql_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
   sku_name = "B_Gen5_2"
 
@@ -193,15 +146,19 @@ resource "azurerm_postgresql_server" "bca-postgres" {
   geo_redundant_backup_enabled = false
   auto_grow_enabled            = true
 
-  administrator_login          = "psqladminun"
-  administrator_login_password = "Password!"
+  administrator_login          = var.random_string.psqladmin.id
+  administrator_login_password = var.random_password.psqpassword.id
   version                      = "9.5"
   ssl_enforcement_enabled      = true
+
+  depends_on = [
+    azurerm_key_vault.avk_name,
+  ]
 }
 
 resource "azurerm_postgresql_database" "strapi" {
   name                = "strapi"
-  resource_group_name         = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_postgresql_server.bca-postgres.name
   charset             = "UTF8"
   collation           = "English_United States.1252"
