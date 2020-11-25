@@ -20,13 +20,13 @@ output "psqlname" {
 
 # TODO: Pull this out after testing - these credentials are directly stored in AKV and should be pulled from AKV
 output "psqladmin" {
-  value       = random_string.psqluid
+  value       = azurerm_postgresql_server.bca-postgres.administrator_login
   description = "This is the admin user id for the PSQL database"
   #sensitive = true
 }
 
 output "psqlpassword" {
-  value       = random_password.psqlpwd
+  value       = azurerm_postgresql_server.bca-postgres.administrator_login_password
   description = "This is the temp admin password for the init of the PSQL database"
   #sensitive = true
 }
