@@ -5,7 +5,7 @@ resource "random_string" "psqladmin" {
   special = false
   lower   = true
   upper   = false
-  number  = true
+  number  = false
 }
 
 resource "random_password" "psqpassword" {
@@ -163,3 +163,11 @@ resource "azurerm_postgresql_database" "strapi" {
   charset             = "UTF8"
   collation           = "English_United States.1252"
 }
+
+# resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
+#   name                = "PostgreSQL K8S Access"
+#   resource_group_name = azurerm_resource_group.rg.name
+#   server_name         = azurerm_postgresql_server.bca-postgres.name
+#   start_ip_address    = "???.???.???.???"
+#   end_ip_address      = "???.???.???.???"
+# }
