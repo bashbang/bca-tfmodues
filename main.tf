@@ -146,13 +146,13 @@ resource "azurerm_postgresql_server" "bca-postgres" {
   geo_redundant_backup_enabled = false
   auto_grow_enabled            = true
 
-  administrator_login          = var.random_string.psqladmin.id
-  administrator_login_password = var.random_password.psqpassword.id
+  administrator_login          = random_string.psqladmin.id
+  administrator_login_password = random_password.psqpassword.id
   version                      = "9.5"
   ssl_enforcement_enabled      = true
 
   depends_on = [
-    azurerm_key_vault.avk_name,
+    azurerm_key_vault.akv,
   ]
 }
 
