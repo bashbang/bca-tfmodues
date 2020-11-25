@@ -128,7 +128,7 @@ resource "azurerm_key_vault_secret" "dbuid-secret" {
   value        = azurerm_postgresql_server.bca-postgres.administrator_login
 }
 
-resource "azurerm_key_vault_secret" "dbuid-secret" {
+resource "azurerm_key_vault_secret" "dbpwd-secret" {
   name         = "PSQLPWD"
   key_vault_id = azurerm_key_vault.akv.id
   value        = azurerm_postgresql_server.bca-postgres.administrator_login_password
