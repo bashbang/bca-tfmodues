@@ -55,7 +55,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 data "azurerm_kubernetes_cluster" "aks" {
-  name = azurerm_kubernetes_cluster.aks.name
+  name                = azurerm_kubernetes_cluster.aks.name
   resource_group_name = azurerm_resource_group.rg.name
 }
 
@@ -180,11 +180,11 @@ resource "azurerm_postgresql_database" "strapi" {
 # TODO: This is wide open - not optimial.  Better to restrict access to just the AKS.  But not sure how that's done.  Does it use public IP?  If so then 
 # TODO: will have to assign a Elastic IP then setup an ingress with routes?  The default AKS loadbalancer doesn't seem to init without a deployment.
 resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
-  name                = "PostgreSQL K8S Access"
+  name                = "AllowAll"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_postgresql_server.bca-postgres.name
   start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+  end_ip_address      = "255.255.255.255"
 }
 
 

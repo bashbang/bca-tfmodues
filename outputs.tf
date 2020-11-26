@@ -32,7 +32,7 @@ output "psqlpassword" {
 }
 
 output "psqlhost" {
-  value = azurerm_postgresql_server.bca-postgres.fqdn
+  value       = azurerm_postgresql_server.bca-postgres.fqdn
   description = "The hostname of the PSQL server."
 }
 
