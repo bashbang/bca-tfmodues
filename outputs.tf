@@ -31,9 +31,19 @@ output "psqlpassword" {
   #sensitive = true
 }
 
+output "psqlhost" {
+  value = azurerm_postgresql_server.bca-postgres.fqdn
+  description = "The hostname of the PSQL server."
+}
+
 output "akvname" {
   value       = azurerm_key_vault.akv.name
   description = "The Azure Key Vault Name"
 }
 
+# TODO: Is there a way of obtaining the IP range for the k8s to update the PSQL firewall allowing pods access.
+# output "aks-network" {
+#   value = azurerm_kubernetes_cluster.aks.???
+#   description = "The AKS network range"
+# }
 

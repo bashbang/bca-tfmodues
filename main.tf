@@ -54,6 +54,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
   #tags = local.common_tags
 }
 
+data "azurerm_kubernetes_cluster" "aks" {
+  name = azurerm_kubernetes_cluster.aks.name
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
 # TODO:
 # Request Github account authorization
 # inject ACR secrets into Github actions - or find a way to have Github pull AKV secrets to authorize image push from github actions pipeline to ACR
@@ -115,6 +120,7 @@ resource "azurerm_key_vault_access_policy" "default_policy" {
     create_before_destroy = true
   }
 
+  #TODO: Ths appid set for this deployment starting with 04b07795 does not have permissions to delete the AKV.  Need to investigate this as the tf destroy doesn't work fully.
   key_permissions         = ["backup", "create", "decrypt", "delete", "encrypt", "get", "import", "list", "purge", "recover", "restore", "sign", "unwrapKey", "update", "verify", "wrapKey"]
   secret_permissions      = ["backup", "delete", "get", "list", "purge", "recover", "restore", "set"]
   certificate_permissions = ["create", "delete", "deleteissuers", "get", "getissuers", "import", "list", "listissuers", "managecontacts", "manageissuers", "purge", "recover", "setissuers", "update", "backup", "restore"]
@@ -132,6 +138,12 @@ resource "azurerm_key_vault_secret" "dbpwd-secret" {
   name         = "PSQLPWD"
   key_vault_id = azurerm_key_vault.akv.id
   value        = azurerm_postgresql_server.bca-postgres.administrator_login_password
+}
+
+resource "azurerm_key_vault_secret" "dbhost-secret" {
+  name         = "PSQLHOST"
+  key_vault_id = azurerm_key_vault.akv.id
+  value        = azurerm_postgresql_server.bca-postgres.fqdn
 }
 
 resource "azurerm_postgresql_server" "bca-postgres" {
@@ -165,10 +177,15 @@ resource "azurerm_postgresql_database" "strapi" {
   collation           = "English_United States.1252"
 }
 
-# resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
-#   name                = "PostgreSQL K8S Access"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   server_name         = azurerm_postgresql_server.bca-postgres.name
-#   start_ip_address    = "???.???.???.???"
-#   end_ip_address      = "???.???.???.???"
-# }
+# TODO: This is wide open - not optimial.  Better to restrict access to just the AKS.  But not sure how that's done.  Does it use public IP?  If so then 
+# TODO: will have to assign a Elastic IP then setup an ingress with routes?  The default AKS loadbalancer doesn't seem to init without a deployment.
+resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
+  name                = "PostgreSQL K8S Access"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_postgresql_server.bca-postgres.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+
+#TODO: Do we need to install tiller for helm? Hasn't helm removed the need for tiller?  Is Tiller already deployed on aks?
