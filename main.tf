@@ -188,6 +188,7 @@ resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
 }
 
 
+# Connect the CSI driver to copy secrets from AKV to K8S
 resource "helm_release" "secrets-store-csi-driver" {
   name       = "secrets-store-csi-driver"
   chart      = "secrets-store-csi-driver"
@@ -198,5 +199,17 @@ resource "helm_release" "secrets-store-csi-driver" {
   depends_on = [
     azurerm_kubernetes_cluster.aks,
   ]
-
 }
+
+# TODO: Started to do the k8s deployment through terrform but it got too crazy.  Not convinced it's the best method anyway.  Will deploy as pipeline instead.
+# provider "kubernetes" {
+#   load_config_file = false
+#   host             = data.azurerm_kubernetes_cluster.aks.host
+#   username         = data.azurerm_kubernetes_cluster.aks.username
+#   password         = data.azurerm_kubernetes_cluster.aks.password
+
+#   client_certificate     = data.azurerm_kubernetes_cluster.aks.client_certificate
+#   client_key             = data.azurerm_kubernetes_cluster.aks.client_key
+#   cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks.cluster_ca_certificate
+# }
+//kubectl apply -f https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/deployment/provider-azure-installer.yaml --namespace azure-akv

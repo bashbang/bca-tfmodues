@@ -10,7 +10,7 @@ variable "location" {
 }
 
 variable "namespace" {
-  type = string
+  type        = string
   description = "The k8s namespace used for this deployment -- used for helm chart deployments for CSI"
 }
 
