@@ -35,6 +35,12 @@ variable "client_secret" {
   description = "The secret/password for this client_id account"
 }
 
+variable "subscription_id" {
+  type = string
+  description = "The Azure subscription id"
+}
+
+
 # ACR variables
 variable acr_name {
   type        = string

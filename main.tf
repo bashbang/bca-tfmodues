@@ -84,8 +84,11 @@ data "azuread_service_principal" "aks_principal" {
   application_id = var.client_id
 }
 
+data "azurerm_subscription" "primary" {}
+
 resource "azurerm_role_assignment" "acrpull_role" {
-  scope                            = data.azurerm_client_config.current.subscription_id
+  scope                            = "/subscriptions/${var.subscription_id}"
+  #data.azurerm_client_config.current.subscription_id
   #azurerm_container_registry.acr.id
   role_definition_name             = "AcrPull"
   principal_id                     = data.azuread_service_principal.aks_principal.id
