@@ -103,7 +103,7 @@ resource "azurerm_key_vault" "akv" {
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_enabled         = false
-  soft_delete_retention_days  = 7
+  soft_delete_retention_days  = 1
   purge_protection_enabled    = false
 
   sku_name = "standard"
@@ -195,19 +195,19 @@ resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
   end_ip_address      = "255.255.255.255"
 }
 
+# # I think we should do this with the deoployments???
+# # Connect the CSI driver to copy secrets from AKV to K8S
+# resource "helm_release" "secrets-store-csi-driver" {
+#   name       = "secrets-store-csi-driver"
+#   chart      = "secrets-store-csi-driver"
+#   repository = "https://raw.githubusercontent.com/kubernetes-sigs/secrets-store-csi-driver/master/charts"
+#   version    = "v0.0.17"
+#   namespace  = var.namespace
 
-# Connect the CSI driver to copy secrets from AKV to K8S
-resource "helm_release" "secrets-store-csi-driver" {
-  name       = "secrets-store-csi-driver"
-  chart      = "secrets-store-csi-driver"
-  repository = "https://raw.githubusercontent.com/kubernetes-sigs/secrets-store-csi-driver/master/charts"
-  version    = "v0.0.17"
-  namespace  = var.namespace
-
-  depends_on = [
-    azurerm_kubernetes_cluster.aks,
-  ]
-}
+#   depends_on = [
+#     azurerm_kubernetes_cluster.aks,
+#   ]
+# }
 
 # TODO: Started to do the k8s deployment through terrform but it got too crazy.  Not convinced it's the best method anyway.  Will deploy as pipeline instead.
 # provider "kubernetes" {
