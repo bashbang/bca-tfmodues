@@ -84,16 +84,17 @@ data "azuread_service_principal" "aks_principal" {
   application_id = var.client_id
 }
 
-data "azurerm_subscription" "primary" {}
+# TODO: removeing this for now - can't seem to get it working - need to manually execute the AcrPull role
+# data "azurerm_subscription" "primary" {}
 
-resource "azurerm_role_assignment" "acrpull_role" {
-  scope                            = "/subscriptions/${var.subscription_id}"
-  #data.azurerm_client_config.current.subscription_id
-  #azurerm_container_registry.acr.id
-  role_definition_name             = "AcrPull"
-  principal_id                     = data.azuread_service_principal.aks_principal.id
-  skip_service_principal_aad_check = true
-}
+# resource "azurerm_role_assignment" "acrpull_role" {
+#   scope                            = "/subscriptions/${var.subscription_id}"
+#   #data.azurerm_client_config.current.subscription_id
+#   #azurerm_container_registry.acr.id
+#   role_definition_name             = "AcrPull"
+#   principal_id                     = data.azuread_service_principal.aks_principal.id
+#   skip_service_principal_aad_check = true
+# }
 
 resource "azurerm_key_vault" "akv" {
   name                        = var.avk_name
