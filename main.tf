@@ -85,7 +85,8 @@ data "azuread_service_principal" "aks_principal" {
 }
 
 resource "azurerm_role_assignment" "acrpull_role" {
-  scope                            = azurerm_container_registry.acr.id
+  scope                            = data.azurerm_client_config.current.subscription_id
+  #azurerm_container_registry.acr.id
   role_definition_name             = "AcrPull"
   principal_id                     = data.azuread_service_principal.aks_principal.id
   skip_service_principal_aad_check = true
