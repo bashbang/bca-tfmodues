@@ -129,19 +129,19 @@ resource "azurerm_key_vault_access_policy" "default_policy" {
 
 # inject the uid/pwd directly into keyvault
 resource "azurerm_key_vault_secret" "dbuid-secret" {
-  name         = "PSQLUID"
+  name         = "DBUID"
   key_vault_id = azurerm_key_vault.akv.id
   value        = azurerm_postgresql_server.bca-postgres.administrator_login
 }
 
 resource "azurerm_key_vault_secret" "dbpwd-secret" {
-  name         = "PSQLPWD"
+  name         = "DBPWD"
   key_vault_id = azurerm_key_vault.akv.id
   value        = azurerm_postgresql_server.bca-postgres.administrator_login_password
 }
 
 resource "azurerm_key_vault_secret" "dbhost-secret" {
-  name         = "PSQLHOST"
+  name         = "DBHOST"
   key_vault_id = azurerm_key_vault.akv.id
   value        = azurerm_postgresql_server.bca-postgres.fqdn
 }
