@@ -9,6 +9,10 @@ variable "location" {
   description = "The region/location within Azure that these resources should be stood up."
 }
 
+variable "namespace" {
+  type = string
+  description = "The k8s namespace used for this deployment -- used for helm chart deployments for CSI"
+}
 
 # AKS Variables
 variable "aks_cluster_name" {

@@ -188,4 +188,15 @@ resource "azurerm_postgresql_firewall_rule" "postgresql-fw-rule" {
 }
 
 
-#TODO: Do we need to install tiller for helm? Hasn't helm removed the need for tiller?  Is Tiller already deployed on aks?
+resource "helm_release" "secrets-store-csi-driver" {
+  name       = "secrets-store-csi-driver"
+  chart      = "secrets-store-csi-driver"
+  repository = "https://raw.githubusercontent.com/kubernetes-sigs/secrets-store-csi-driver/master/charts"
+  version    = "v0.0.17"
+  namespace  = var.namespace
+
+  depends_on = [
+    azurerm_kubernetes_cluster.aks,
+  ]
+
+}
