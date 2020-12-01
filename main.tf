@@ -172,9 +172,9 @@ resource "azurerm_postgresql_server" "bca-postgres" {
   version                 = "9.5"
   ssl_enforcement_enabled = true
 
-  depends_on = [
-    azurerm_key_vault.akv,
-  ]
+  # depends_on = [
+  #   azurerm_key_vault.akv,
+  # ]
 }
 
 resource "azurerm_postgresql_database" "strapi" {

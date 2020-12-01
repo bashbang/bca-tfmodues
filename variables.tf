@@ -53,8 +53,8 @@ variable psql_name {
   description = "The name of the Postgresql datbase"
 }
 
-# AKV
-variable avk_name {
-  type        = string
-  description = "The globally unique name for the AKV - consider using random string within the name"
-}
+# # AKV
+# variable avk_name {
+#   type        = string
+#   description = "The globally unique name for the AKV - consider using random string within the name"
+# }
