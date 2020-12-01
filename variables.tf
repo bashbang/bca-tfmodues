@@ -36,7 +36,7 @@ variable "client_secret" {
 }
 
 variable "subscription_id" {
-  type = string
+  type        = string
   description = "The Azure subscription id"
 }
 
